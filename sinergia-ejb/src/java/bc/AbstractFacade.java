@@ -5,14 +5,20 @@
  */
 package bc;
 
+import be.Cuenta;
+import be.Cuenta_;
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
 
 /**
  *
  * @author argos
  */
 public abstract class AbstractFacade<T> {
+
     private Class<T> entityClass;
 
     public AbstractFacade(Class<T> entityClass) {
@@ -59,5 +65,21 @@ public abstract class AbstractFacade<T> {
         javax.persistence.Query q = getEntityManager().createQuery(cq);
         return ((Long) q.getSingleResult()).intValue();
     }
-    
+
+    public List<T> Cuenta_listaNivel(int nivel) {
+
+        CriteriaQuery<Cuenta> cq = getEntityManager().getCriteriaBuilder().createQuery(Cuenta.class);
+        CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
+        Root<Cuenta> registro = cq.from(Cuenta.class);
+        cq.orderBy(cb.asc(registro.get(Cuenta_.pkId)));
+        cq.where(
+                cb.and(
+                        cb.equal(registro.get(Cuenta_.estadoExistencia), 1),
+                        cb.equal(registro.get(Cuenta_.nivel), nivel)
+                )
+        );
+
+        javax.persistence.Query q = getEntityManager().createQuery(cq);
+        return q.getResultList();
+    }
 }

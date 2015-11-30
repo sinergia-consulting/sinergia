@@ -29,5 +29,6 @@ public interface CuentaFacadeLocal {
     List<Cuenta> findRange(int[] range);
 
     int count();
-    
+
+    List<Cuenta> Cuenta_listaNivel(int nivel);
 }
